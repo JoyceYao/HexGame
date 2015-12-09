@@ -1,51 +1,141 @@
 <!DOCTYPE html>
-<html>
+<!-- build:[manifest] game.appcache -->
+<html lang="en" ng-app="myApp" ng-strict-di>
+<!-- /build -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Hex Game</title>
+  <meta name="description" content="Hex game">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Hex Game : Social Multiplayer Game">
+  <!-- build:js http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js -->
+  <script crossorigin="anonymous" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.js"></script>
+  <!-- /build -->
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <!-- For the game rules/instructions, I use carousel from Angular UI + Bootstrap -->
+  <!-- build:css http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.css">
+  <!-- /build -->
+  <!-- build:js http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-touch.min.js -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-touch.js"></script>
+  <!-- /build -->
+  <!-- build:js http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.js"></script>
+  <!-- /build -->
+  <!-- build:js http://yoav-zibin.github.io/emulator/dist/turnBasedServices.3.min.js -->
+  <script crossorigin="anonymous" src="http://yoav-zibin.github.io/emulator/dist/turnBasedServices.3.js"></script>
+  <!-- /build -->
+  <link rel="stylesheet" type="text/css" href="http://yoav-zibin.github.io/emulator/main.css">
 
-    <title>Hex Game</title>
-  </head>
+  <!-- build:js dist/everything.min.js -->
+  <script src="ts_output_readonly_do_NOT_change_manually/src/gameLogic.js"></script>
+  <script src="ts_output_readonly_do_NOT_change_manually/src/game.js"></script>
+  <script src="ts_output_readonly_do_NOT_change_manually/src/aiService.js"></script>
+  <!-- /build -->
 
-  <body>
+  <link rel="stylesheet" type="text/css" href="game.css">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/npb245/HexGame">View on GitHub</a>
+</head>
+<body ng-cloak>
 
-          <h1 id="project_title">Hex Game</h1>
-          <h2 id="project_tagline">Social Multiplayer Game</h2>
+  <div style="position:absolute; bottom:5px; left: 5px">
+    <span ng-click="isHelpModalShown = true"
+        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+  </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/npb245/HexGame/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/npb245/HexGame/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+  <div class="overlayModal" ng-class="{zeroOpacity: !isHelpModalShown, oneOpacity: isHelpModalShown}" aria-hidden="true">
+    <div class="modal-backdrop in"></div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="isHelpModalShown = false" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">
+            {{ 'RULES_OF_HEX' | translate }}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <carousel style="height: 150px">
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                    {{ 'RULES_SLIDE1' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/Slide1.png" style="height:100px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                  {{ 'RULES_SLIDE2' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/Slide2.png" style="height:100px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                  {{ 'RULES_SLIDE3' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/Slide3.png" style="height:100px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+          </carousel>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" ng-click="isHelpModalShown = false">
+            {{ 'CLOSE' | translate }}
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Hex is a 2 player board game.</p>
-
-<p>Description and Rules: <a href="http://en.wikipedia.org/wiki/Hex_(board_game)">http://en.wikipedia.org/wiki/Hex_(board_game)</a></p>
-      </section>
+  <div id="gameArea" >
+    <svg id="draggingLines" width="100%" height="51%"
+        style="display:none; position:absolute; z-index: 30;">
+      <line id="horizontalDraggingLine"
+            x1="1" y1="13.5%"
+            x2="100%" y2="12.5%"
+            stroke-width="1%"/>
+      <line id="verticalDraggingLine"
+            y1="0" x1="12.5%"
+            y2="100%" x2="40.5%"
+            stroke-width="1%"/>
+    </svg>
+    <img ng-attr-width="{{50 / colsNum}}%" ng-attr-height="{{50 / rowsNum}}%"
+      id="clickToDragPiece"
+      ng-src="{{getPreviewSrc()}}"
+      style="display:none; position:absolute; z-index: 31;" />
+    <img src="imgs/border.png" id='border' style="position:absolute;left:0;width:100%;height:51%;">
+    <div id='game'>
+      <div ng-repeat="row in [0, 1, 2,3,4,5,6,7,8,9,10]"
+        style="position:absolute; top:{{row * 3.8+3.5}}%; left:{{row*2.5+10}}%; width:5%; height:5%;">
+        <img id="hexagon" ng-repeat="col in [0, 1, 2,3,4,5,6,7,8,9,10]"
+          src = "imgs/hexagon.png" style="position:absolute; top:7%; left:{{col * 100+5}}%; width:100%; height:100%;">
+          <div ng-repeat="col in [0, 1, 2,3,4,5,6,7,8,9,10]"
+            style="position:absolute; top:25%; left:{{col * 100+10+9.5}}%; width:70%; height:63%;"
+            ng-click="game.cellClicked(row, col)"
+            id="{{'e2e_test_div_' + row + 'x' + col}}">
+              <img ng-class="{piece: true,}"
+                ng-show="game.shouldShowImage(row, col)"
+                ng-src="{{game.getImageSrc(row, col)}}"
+                id="{{'e2e_test_img_' + row + 'x' + col}}">
+          </div>
+      </div>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Hex Game maintained by <a href="https://github.com/npb245">npb245</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
+  </div>
   </body>
 </html>
