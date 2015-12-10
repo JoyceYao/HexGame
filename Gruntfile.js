@@ -87,9 +87,10 @@ module.exports = function(grunt) {
     var commandStr = 'convert ' + directory + '\\' + src_img +
         ' -resize ' + width + 'x' + height +
         ' -size ' + width + 'x' + height +
-        ' -gravity center' + 
-        ' -background transparent' + 
-        ' -extent ' + dimensions +
+        ' -gravity center' + 			// put the image in the vertical and horizontal center
+        ' -background transparent' + 	// make background transparent
+        ' -extent ' + dimensions +		// force the image to fit the require pixel size
+        ' -quality 75' +				// compress the image
         ' ' + output_directory + '\\' + fileName;
 
     console.log("make command=" + commandStr);
@@ -105,14 +106,13 @@ module.exports = function(grunt) {
         command: auto_resize_images_command
       }
     },
-    /*
     karma: {
       unit: {
         configFile: 'karma.conf.js',
         background: true,
         singleRun: false
       }
-    },*/
+    },
     concat: {
       options: {
         separator: ';',
@@ -201,16 +201,6 @@ module.exports = function(grunt) {
     },
   });
 
-  //grunt.loadNpmTasks('grunt-contrib-watch');
-  //grunt.loadNpmTasks('grunt-contrib-jshint');
-  /*
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-processhtml');
-  grunt.loadNpmTasks('grunt-manifest');
-  grunt.loadNpmTasks('grunt-http-server');
-  grunt.loadNpmTasks('grunt-protractor-runner');*/
   require('load-grunt-tasks')(grunt);
 
   // Default task(s).
