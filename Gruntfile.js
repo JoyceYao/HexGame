@@ -159,6 +159,7 @@ module.exports = function(grunt) {
             'dist/everything.min.js',
             'game.css',
             'imgs/hexagon.png', 'imgs/R.png', 'imgs/B.png',
+            'imgs/border.png',
             'imgs/Slide1.png',
             'imgs/Slide2.png',
             'imgs/Slide3.png'
