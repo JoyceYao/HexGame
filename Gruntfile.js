@@ -19,6 +19,7 @@ module.exports = function(grunt) {
     "50x50",
     "200x200",
     "320x50",
+    "320x320",
     "android/7inTablet-615x984",
     "android/10inTablet-656x1048",
     "android/Phone-656x1054",
@@ -55,7 +56,6 @@ module.exports = function(grunt) {
     "phonegap/splash-512x512",
   ];
   var commands = [];
-  var commands2 = [];
   var subdirectories = {};
   commands.push('rmdir /s/q ' + output_directory);
   commands.push('mkdir ' + output_directory);
