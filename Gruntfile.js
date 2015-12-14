@@ -29,6 +29,7 @@ module.exports = function(grunt) {
     "ios/iphone5-4inch-640x1096",
     "ios/iphone6-4.7inch-750x1334",
     "ios/iphone6plus-5.5inch-1242x2208",
+    "ios/icon-1024x1024",
     "phonegap/icon-29",
     "phonegap/icon-40",
     "phonegap/icon-57",
@@ -82,15 +83,17 @@ module.exports = function(grunt) {
     }
 
     var fileName = desired_size.replace('/', '\\') + '.png';
+    // IOS images cannot be transparent
+    var transparentStr = fileName.startsWith("ios") ? ' -background white' : ' -background transparent' ;
 
     // create resized pictures in temp folders
     var commandStr = 'convert ' + directory + '\\' + src_img +
         ' -resize ' + width + 'x' + height +
         ' -size ' + width + 'x' + height +
         ' -gravity center' + 			// put the image in the vertical and horizontal center
-        ' -background transparent' + 	// make background transparent
+        transparentStr + 			 	// make background transparent  ' -background transparent' +
         ' -extent ' + dimensions +		// force the image to fit the require pixel size
-        ' -quality 75' +				// compress the image
+        ' -quality 75' +   				// compress the image
         ' ' + output_directory + '\\' + fileName;
 
     console.log("make command=" + commandStr);
